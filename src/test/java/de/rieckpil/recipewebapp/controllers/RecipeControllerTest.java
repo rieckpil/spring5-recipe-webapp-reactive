@@ -34,7 +34,7 @@ public class RecipeControllerTest {
     public void testShowById() throws Exception {
 
         Recipe serviceReturn = new Recipe();
-        serviceReturn.setId(1L);
+        serviceReturn.setId("1");
 
         when(mockedRecipeService.getRecipeById(1L)).thenReturn(serviceReturn);
 

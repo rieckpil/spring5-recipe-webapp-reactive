@@ -4,18 +4,22 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
-@Data
-@EqualsAndHashCode(exclude = {"recipe"})
+@Setter
+@Getter
 public class Ingredient {
 
+    @Id
     private String id;
     private String description;
     private BigDecimal amount;
-    private Recipe recipe;
+
+    @DBRef
     private UnitOfMeasure unitOfMeasure;
 
     public Ingredient() {
@@ -30,7 +34,7 @@ public class Ingredient {
     public Ingredient(String description, BigDecimal amount, Recipe recipe, UnitOfMeasure unitOfMeasure) {
         this.description = description;
         this.amount = amount;
-        this.recipe = recipe;
+        //this.recipe = recipe;
         this.unitOfMeasure = unitOfMeasure;
     }
 }
