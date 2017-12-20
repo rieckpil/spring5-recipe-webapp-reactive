@@ -46,6 +46,7 @@ public class IngredientController {
 
         IngredientCommand ingredientCommand = new IngredientCommand();
         ingredientCommand.setRecipeId(recipeCommand.getId());
+        System.out.println(ingredientCommand.getRecipeId());
         model.addAttribute("ingredient", ingredientCommand);
 
         ingredientCommand.setUnitOfMeasure(new UnitOfMeasureCommand());
