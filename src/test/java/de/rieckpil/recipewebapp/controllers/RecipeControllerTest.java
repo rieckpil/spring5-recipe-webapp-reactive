@@ -36,7 +36,7 @@ public class RecipeControllerTest {
         Recipe serviceReturn = new Recipe();
         serviceReturn.setId("1");
 
-        when(mockedRecipeService.getRecipeById(1L)).thenReturn(serviceReturn);
+        when(mockedRecipeService.getRecipeById("1")).thenReturn(serviceReturn);
 
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(cut).build();
 
