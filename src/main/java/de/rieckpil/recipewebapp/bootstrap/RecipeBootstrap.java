@@ -4,7 +4,11 @@ import de.rieckpil.recipewebapp.domain.*;
 import de.rieckpil.recipewebapp.repositories.CategoryRepository;
 import de.rieckpil.recipewebapp.repositories.RecipeRepository;
 import de.rieckpil.recipewebapp.repositories.UnitOfMeasureRepository;
+import de.rieckpil.recipewebapp.repositories.reactive.CategoryReactiveRepository;
+import de.rieckpil.recipewebapp.repositories.reactive.RecipeReactiveRepository;
+import de.rieckpil.recipewebapp.repositories.reactive.UnitOfMeasureReactiveRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -25,6 +29,15 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
     private final RecipeRepository recipeRepository;
     private final UnitOfMeasureRepository unitOfMeasureRepository;
 
+    @Autowired
+    UnitOfMeasureReactiveRepository unitOfMeasureReactiveRepository;
+
+    @Autowired
+    RecipeReactiveRepository recipeReactiveRepository;
+
+    @Autowired
+    CategoryReactiveRepository categoryReactiveRepository;
+
     public RecipeBootstrap(CategoryRepository categoryRepository, RecipeRepository recipeRepository, UnitOfMeasureRepository unitOfMeasureRepository) {
         this.categoryRepository = categoryRepository;
         this.recipeRepository = recipeRepository;
@@ -40,6 +53,10 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
         recipeRepository.saveAll(getRecipes());
         log.debug("Loading Bootstrap Data");
 
+        log.info("##########");
+        log.info("UOM count: " + unitOfMeasureReactiveRepository.count().block().toString());
+        log.info("Recipe count: " + recipeReactiveRepository.count().block().toString());
+        log.info("Category count: " + categoryReactiveRepository.count().block().toString());
     }
 
     private void loadCategories() {
