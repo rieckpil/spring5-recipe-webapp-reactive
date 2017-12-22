@@ -3,27 +3,26 @@ package de.rieckpil.recipewebapp.services;
 import de.rieckpil.recipewebapp.converters.RecipeCommandToRecipe;
 import de.rieckpil.recipewebapp.converters.RecipeToRecipeCommand;
 import de.rieckpil.recipewebapp.domain.Recipe;
-import de.rieckpil.recipewebapp.repositories.RecipeRepository;
+import de.rieckpil.recipewebapp.repositories.reactive.RecipeReactiveRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import reactor.core.publisher.Flux;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RecipeServiceImplTest {
 
-    private RecipeServiceImpl cut;
+    private RecipeService cut;
 
     @Mock
-    private RecipeRepository mockedRepository;
+    private RecipeReactiveRepository mockedRepository;
 
     @Mock
     private RecipeCommandToRecipe mockedRecipeCommandToRecipe;
@@ -37,17 +36,18 @@ public class RecipeServiceImplTest {
     }
 
     @Test
-    public void getRecipes() {
+    public void testGetRecipes() {
 
         Recipe recipe = new Recipe();
-        Set<Recipe> recipeSet = new HashSet<>();
-        recipeSet.add(recipe);
 
-        when(mockedRepository.findAll()).thenReturn(recipeSet);
+        when(mockedRepository.findAll()).thenReturn(Flux.just(recipe));
 
-        Set<Recipe> result = cut.getRecipes();
+        List<Recipe> result = cut.getRecipes().collectList().block();
 
         assertEquals(1, result.size());
-        verify(mockedRepository).findAll();
+        verify(mockedRepository, times(1)).findAll();
+        verify(mockedRepository, never()).findById(anyString());
+
+
     }
 }

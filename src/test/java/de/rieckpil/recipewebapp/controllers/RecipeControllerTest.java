@@ -9,13 +9,11 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import reactor.core.publisher.Mono;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RecipeControllerTest {
@@ -36,7 +34,7 @@ public class RecipeControllerTest {
         Recipe serviceReturn = new Recipe();
         serviceReturn.setId("1");
 
-        when(mockedRecipeService.getRecipeById("1")).thenReturn(serviceReturn);
+        when(mockedRecipeService.getRecipeById("1")).thenReturn(Mono.just(serviceReturn));
 
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(cut).build();
 

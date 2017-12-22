@@ -12,8 +12,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
+import reactor.core.publisher.Flux;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -54,14 +54,13 @@ public class IndexControllerTest {
     @Test
     public void testGetIndexPage() {
 
-        Set<Recipe> recipeSet = new HashSet<>();
-        recipeSet.add(new Recipe());
+        Recipe recipe1 = new Recipe();
+        recipe1.setDescription("Dummy description");
 
-        Recipe recipe = new Recipe();
-        recipe.setDescription("Dummy description");
-        recipeSet.add(recipe);
+        Recipe recipe2 = new Recipe();
+        recipe2.setDescription("Dummy description 2 ");
 
-        when(mockedService.getRecipes()).thenReturn(recipeSet);
+        when(mockedService.getRecipes()).thenReturn(Flux.just(recipe1, recipe2));
 
         String viewName = cut.getIndexPage(mockedModel);
 

@@ -62,8 +62,6 @@ public class RecipeController {
         }
 
         RecipeCommand saveCommand = recipeService.saveRecipeCommand(recipeCommand).block();
-        System.out.println(recipeCommand);
-
         return "redirect:/recipe/" + saveCommand.getId() + "/show/";
     }
 

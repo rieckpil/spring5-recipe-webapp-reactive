@@ -1,11 +1,11 @@
 package de.rieckpil.recipewebapp.services;
 
 import de.rieckpil.recipewebapp.domain.Recipe;
-import de.rieckpil.recipewebapp.repositories.RecipeRepository;
+import de.rieckpil.recipewebapp.repositories.reactive.RecipeReactiveRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 
@@ -13,33 +13,56 @@ import java.io.IOException;
 @Slf4j
 public class ImageServiceImpl implements ImageService {
 
-    private RecipeRepository recipeRepository;
+    private RecipeReactiveRepository recipeReactiveRepository;
 
-    public ImageServiceImpl(RecipeRepository recipeRepository) {
-        this.recipeRepository = recipeRepository;
+    public ImageServiceImpl(RecipeReactiveRepository recipeReactiveRepository) {
+        this.recipeReactiveRepository = recipeReactiveRepository;
     }
 
     @Override
-    @Transactional
-    public void saveImageFile(String recipeId, MultipartFile file) {
+    public Mono<Void> saveImageFile(String recipeId, MultipartFile file) {
         log.debug("received a file for recipe with id: " + recipeId);
 
-        try{
-            Recipe recipe = recipeRepository.findById(recipeId).get();
-            Byte[] byteObjects = new Byte[file.getBytes().length];
+        Mono<Recipe> recipeMono = recipeReactiveRepository.findById(recipeId)
+                .map(recipe -> {
+                    Byte[] byteObjects;
+                    try {
+                        byteObjects = new Byte[file.getBytes().length];
 
-            int i = 0;
+                        int i = 0;
 
-            for(byte b: file.getBytes()){
-                byteObjects[i++] = b;
-            }
+                        for (byte b : file.getBytes()) {
+                            byteObjects[i++] = b;
+                        }
 
-            recipe.setImage(byteObjects);
-            recipeRepository.save(recipe);
+                        recipe.setImage(byteObjects);
+                        return recipe;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        throw new RuntimeException(e);
+                    }
+                });
 
-        }catch(IOException e){
-            log.error("Error occured while persisting the file. " + e);
-            e.printStackTrace();
-        }
+        recipeReactiveRepository.save(recipeMono.block()).block();
+
+        return Mono.empty();
+
+//        try{
+//            Recipe recipe = recipeRepository.findById(recipeId).get();
+//            Byte[] byteObjects = new Byte[file.getBytes().length];
+//
+//            int i = 0;
+//
+//            for(byte b: file.getBytes()){
+//                byteObjects[i++] = b;
+//            }
+//
+//            recipe.setImage(byteObjects);
+//            recipeRepository.save(recipe);
+//
+//        }catch(IOException e){
+//            log.error("Error occured while persisting the file. " + e);
+//            e.printStackTrace();
+//        }
     }
 }
