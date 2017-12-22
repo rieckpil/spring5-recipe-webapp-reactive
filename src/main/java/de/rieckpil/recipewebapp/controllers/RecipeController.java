@@ -1,18 +1,17 @@
 package de.rieckpil.recipewebapp.controllers;
 
 import de.rieckpil.recipewebapp.commands.RecipeCommand;
-import de.rieckpil.recipewebapp.exceptions.NotFoundException;
 import de.rieckpil.recipewebapp.services.RecipeService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
-import java.io.FileNotFoundException;
 
 @Slf4j
 @Controller
@@ -27,7 +26,7 @@ public class RecipeController {
     @RequestMapping("/recipe/{id}/show")
     public String showById(@PathVariable String id, Model model){
 
-        model.addAttribute("recipe", recipeService.getRecipeById(id).block());
+        model.addAttribute("recipe", recipeService.getRecipeById(id));
 
         return "recipe/show";
     }
@@ -73,40 +72,5 @@ public class RecipeController {
         return "redirect:/";
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NotFoundException.class)
-    public ModelAndView handleNotFoundException(Exception exception){
-
-        ModelAndView modelAndView = new ModelAndView();
-
-        modelAndView.setViewName("404error");
-        modelAndView.addObject("exception", exception);
-
-        return modelAndView;
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(NumberFormatException.class)
-    public ModelAndView handleNumberFormatException(Exception exception){
-
-        ModelAndView modelAndView = new ModelAndView();
-
-        modelAndView.setViewName("400error");
-        modelAndView.addObject("exception", exception);
-
-        return modelAndView;
-    }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(FileNotFoundException.class)
-    public ModelAndView handleFileNotFoundException(Exception exception){
-
-        ModelAndView modelAndView = new ModelAndView();
-
-        modelAndView.setViewName("404error");
-        modelAndView.addObject("exception", exception);
-
-        return modelAndView;
-    }
 }
 

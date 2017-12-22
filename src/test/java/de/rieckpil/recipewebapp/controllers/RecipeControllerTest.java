@@ -3,6 +3,7 @@ package de.rieckpil.recipewebapp.controllers;
 import de.rieckpil.recipewebapp.domain.Recipe;
 import de.rieckpil.recipewebapp.services.RecipeService;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -16,6 +17,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(MockitoJUnitRunner.class)
+@Ignore
 public class RecipeControllerTest {
 
     @Mock
