@@ -3,7 +3,6 @@ package de.rieckpil.recipewebapp.controllers;
 import de.rieckpil.recipewebapp.commands.IngredientCommand;
 import de.rieckpil.recipewebapp.commands.RecipeCommand;
 import de.rieckpil.recipewebapp.commands.UnitOfMeasureCommand;
-import de.rieckpil.recipewebapp.domain.UnitOfMeasure;
 import de.rieckpil.recipewebapp.services.IngredientService;
 import de.rieckpil.recipewebapp.services.RecipeService;
 import de.rieckpil.recipewebapp.services.UnitOfMeasureService;
@@ -32,7 +31,7 @@ public class IngredientController {
 
         log.debug("Getting ingredient list for id: " + recipeId);
 
-        model.addAttribute("recipe", recipeService.getCommandById(recipeId));
+        model.addAttribute("recipe", recipeService.getCommandById(recipeId).block());
 
         return "recipe/ingredient/list";
 

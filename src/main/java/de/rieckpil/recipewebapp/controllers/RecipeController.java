@@ -4,7 +4,6 @@ import de.rieckpil.recipewebapp.commands.RecipeCommand;
 import de.rieckpil.recipewebapp.exceptions.NotFoundException;
 import de.rieckpil.recipewebapp.services.RecipeService;
 import lombok.extern.slf4j.Slf4j;
-import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,7 +27,7 @@ public class RecipeController {
     @RequestMapping("/recipe/{id}/show")
     public String showById(@PathVariable String id, Model model){
 
-        model.addAttribute("recipe", recipeService.getRecipeById(id));
+        model.addAttribute("recipe", recipeService.getRecipeById(id).block());
 
         return "recipe/show";
     }
@@ -42,7 +41,7 @@ public class RecipeController {
 
     @RequestMapping("/recipe/{id}/update")
     public String updateRecipe(@PathVariable String id, Model model){
-        model.addAttribute("recipe", recipeService.getCommandById(id));
+        model.addAttribute("recipe", recipeService.getCommandById(id).block());
 
         return "recipe/recipeform";
     }
