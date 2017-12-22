@@ -2,18 +2,18 @@ package de.rieckpil.recipewebapp.services;
 
 import de.rieckpil.recipewebapp.commands.RecipeCommand;
 import de.rieckpil.recipewebapp.domain.Recipe;
-
-import java.util.Set;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface RecipeService {
 
-    Set<Recipe> getRecipies();
+    Flux<Recipe> getRecipes();
 
-    Recipe getRecipeById(String id);
+    Mono<Recipe> getRecipeById(String id);
 
-    RecipeCommand getCommandById(String id);
+    Mono<RecipeCommand> getCommandById(String id);
 
-    RecipeCommand saveRecipeCommand(RecipeCommand recipeCommand);
+    Mono<RecipeCommand> saveRecipeCommand(RecipeCommand recipeCommand);
 
     void deleteById(String id);
 }

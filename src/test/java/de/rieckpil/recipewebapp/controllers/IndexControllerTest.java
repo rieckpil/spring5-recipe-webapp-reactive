@@ -61,11 +61,11 @@ public class IndexControllerTest {
         recipe.setDescription("Dummy description");
         recipeSet.add(recipe);
 
-        when(mockedService.getRecipies()).thenReturn(recipeSet);
+        when(mockedService.getRecipes()).thenReturn(recipeSet);
 
         String viewName = cut.getIndexPage(mockedModel);
 
-        verify(mockedService).getRecipies();
+        verify(mockedService).getRecipes();
         verify(mockedModel).addAttribute(eq("recipes"),recipeSetCaptor.capture());
 
         assertEquals("index", viewName);

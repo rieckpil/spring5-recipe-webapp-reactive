@@ -45,7 +45,7 @@ public class RecipeServiceImplTest {
 
         when(mockedRepository.findAll()).thenReturn(recipeSet);
 
-        Set<Recipe> result = cut.getRecipies();
+        Set<Recipe> result = cut.getRecipes();
 
         assertEquals(1, result.size());
         verify(mockedRepository).findAll();
