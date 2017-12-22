@@ -1,26 +1,31 @@
 package de.rieckpil.recipewebapp.controllers;
 
 import de.rieckpil.recipewebapp.commands.RecipeCommand;
+import de.rieckpil.recipewebapp.exceptions.NotFoundException;
 import de.rieckpil.recipewebapp.services.RecipeService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import javax.validation.Valid;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.exceptions.TemplateInputException;
 
 @Slf4j
 @Controller
 public class RecipeController {
 
-    private RecipeService recipeService;
+    private final RecipeService recipeService;
+    private WebDataBinder webDataBinder;
 
     public RecipeController(RecipeService recipeService) {
         this.recipeService = recipeService;
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder webDataBinder) {
+        this.webDataBinder = webDataBinder;
     }
 
     @RequestMapping("/recipe/{id}/show")
@@ -46,9 +51,11 @@ public class RecipeController {
     }
 
 
-    @PostMapping
-    @RequestMapping("/recipe")
-    public String saveOrUpdate(@Valid @ModelAttribute("recipe") RecipeCommand recipeCommand, BindingResult bindingResult){
+    @PostMapping("/recipe")
+    public String saveOrUpdate(@ModelAttribute("recipe") RecipeCommand recipeCommand) {
+
+        webDataBinder.validate();
+        BindingResult bindingResult = webDataBinder.getBindingResult();
 
         if(bindingResult.hasErrors()){
 
@@ -70,6 +77,18 @@ public class RecipeController {
         log.debug("deleting recipe by id: " + id);
         recipeService.deleteById(id);
         return "redirect:/";
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler({NotFoundException.class, TemplateInputException.class})
+    public String handleNotFoundException(Exception exception, Model model) {
+
+        log.error("Handling not found exception");
+        log.error(exception.getMessage());
+
+        model.addAttribute("exception", exception);
+
+        return "404error";
     }
 
 }
