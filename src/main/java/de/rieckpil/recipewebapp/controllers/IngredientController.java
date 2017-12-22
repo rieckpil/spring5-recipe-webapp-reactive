@@ -51,7 +51,7 @@ public class IngredientController {
 
         ingredientCommand.setUnitOfMeasure(new UnitOfMeasureCommand());
 
-        model.addAttribute("uomList", unitOfMeasureService.getAllUnitOfMeasures());
+        model.addAttribute("uomList", unitOfMeasureService.getAllUnitOfMeasures().collectList().block());
 
         return "recipe/ingredient/ingredientform";
 
@@ -72,7 +72,7 @@ public class IngredientController {
     public String updateRecipeIngredient(@PathVariable String recipeId, @PathVariable String id, Model model){
 
         model.addAttribute("ingredient", ingredientService.findByRecipeIdAndIngredientId(recipeId, id));
-        model.addAttribute("uomList", unitOfMeasureService.getAllUnitOfMeasures());
+        model.addAttribute("uomList", unitOfMeasureService.getAllUnitOfMeasures().collectList().block());
 
         return "recipe/ingredient/ingredientform";
     }
